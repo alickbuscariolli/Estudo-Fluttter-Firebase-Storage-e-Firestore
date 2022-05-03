@@ -55,31 +55,6 @@ class _StoragePageState extends State<StoragePage> {
     return image;
   }
 
-  //criando a FUNCAO/METODO de upload... Ela e do tipo FUTURE e vai receber um
-//path/caminho de onde ta (no celular) a imagem q o usuario selecionou acima
-//e q queremos enviar
-  Future<UploadTask> upload(String path) async {
-    //aqui nos vamos recuperar o arquivo q foi passado (ou o caminho dele)... Passando
-    //o valor para a variavel File
-    File file = File(path);
-    //agora vamos criar uma referencia/nome da pasta no "storage" onde vamos salvar essas imagens
-    try {
-      //vamos salvar na pasta IMAGES (pasta q vai ficar no FB STORAGE), e as imagens vao
-      //se chamar IMG-_E_A_DATA_E_HORA_ATUAL e o formato .JPG
-      String ref = 'images/img-${DateTime.now().toString()}.jpg';
-      //chamando a nossa REFENCIA chamada de STORAGE (para fazer a conexao com o FB STORAGE)
-      //e assim armazenar... Passando o valor q ta na variavel REF... ou seja o
-      //img{data e hora}(nome da img)... E no putFile estamos passando o valor/foto q a armazenado na
-      //variavel FILE... Portanto assim conseguimos upar um arquivo para o FB STORAGE
-      return storage.ref(ref).putFile(file);
-    }
-    //caso nao de certo os comandos acima... vai exibir uma EXCEPETION
-    //ou seja vai exibir uma mensagem de erro
-    on FirebaseException catch (e) {
-      throw Exception('Erro no upload: ${e.code}');
-    }
-  }
-
 //funcao/metodo q sera chamado quando apertamos no BOTAO de UPLOAD q fica na TOPBAR do APP
 //esse metodo serve para verificar SE ja temos uma IMG selecionada para UPAR, caso SIM enviar
 //ela para o FB STORAGE... Caso nao abrir a galeria do celular para escolher a IMG
@@ -93,7 +68,7 @@ class _StoragePageState extends State<StoragePage> {
       //conforme pedido acima... Nos estamos chamando o METODO UploadTask e para ele
       //e para o atributo/variavel UPLOAD nos vamos passar a IMAGEM q ta na variavel FILE
       //e o caminho onde ela vai ficar no STORAGE com o .path
-      UploadTask task = await upload(file.path);
+      UploadTask task = await Fb.upload(file.path);
 
 //agora vamos monitorar a TASK q foi criada acima... Para sabermos se ela esta em
 //RUNNING ou seja esta em execução... Portando fazendo UP de IMG

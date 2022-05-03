@@ -1,6 +1,9 @@
 //codigo rafa
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 //criando a classe BANCO
 class Fb {
@@ -44,5 +47,30 @@ class Fb {
         .then((value) => print("cadastro ok"))
         //caso de erro, vai exibir a mensagem "failed to add user" no CONSOLE do VISUALSTUDIO
         .catchError((error) => print("falha ao add cadastro $error"));
+  }
+
+  //criando a FUNCAO/METODO de upload... Ela e do tipo FUTURE e vai receber um
+  //path/caminho de onde ta (no celular) a imagem q o usuario selecionou acima
+  //e q queremos enviar
+  static Future<UploadTask> upload(String path) async {
+    //aqui nos vamos recuperar o arquivo q foi passado (ou o caminho dele)... Passando
+    //o valor para a variavel File
+    File file = File(path);
+    //agora vamos criar uma referencia/nome da pasta no "storage" onde vamos salvar essas imagens
+    try {
+      //vamos salvar na pasta IMAGES (pasta q vai ficar no FB STORAGE), e as imagens vao
+      //se chamar IMG-_E_A_DATA_E_HORA_ATUAL e o formato .JPG
+      String ref = 'images/img-${DateTime.now().toString()}.jpg';
+      //chamando a nossa REFENCIA chamada de STORAGE (para fazer a conexao com o FB STORAGE)
+      //e assim armazenar... Passando o valor q ta na variavel REF... ou seja o
+      //img{data e hora}(nome da img)... E no putFile estamos passando o valor/foto q a armazenado na
+      //variavel FILE... Portanto assim conseguimos upar um arquivo para o FB STORAGE
+      return FirebaseStorage.instance.ref(ref).putFile(file);
+    }
+    //caso nao de certo os comandos acima... vai exibir uma EXCEPETION
+    //ou seja vai exibir uma mensagem de erro
+    on FirebaseException catch (e) {
+      throw Exception('Erro no upload: ${e.code}');
+    }
   }
 }
